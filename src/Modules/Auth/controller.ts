@@ -2,25 +2,50 @@ import { Request, Response } from "express";
 import { AuthService } from "./services";
 
 export class AuthController {
-  // POST /api/auth/signup
+
   static async signup(req: Request, res: Response) {
     try {
-      const { firstName, lastName, email, password, confirmPassword, role  } = req.body;
-      const result = await AuthService.signup({
+      const {
+        title,
         firstName,
         lastName,
         email,
         password,
         confirmPassword,
-        role
+        role,
+        documentId,
+        homeAddress,
+        proofsAddress,
+        subjectsOffered,
+        academicQualification,
+        proofsQualification,
+        highestQualificationPerSubject,
+      } = req.body;
+
+      const result = await AuthService.signup({
+        title,
+        firstName,
+        lastName,
+        email,
+        password,
+        confirmPassword,
+        role,
+        documentId,
+        homeAddress,
+        proofsAddress,
+        subjectsOffered,
+        academicQualification,
+        proofsQualification,
+        highestQualificationPerSubject,
       });
+
       res.status(201).json({ message: "User created successfully", user: result });
     } catch (err: any) {
       res.status(400).json({ error: err.message });
     }
   }
 
-  // POST /api/auth/login
+
   static async login(req: Request, res: Response) {
     try {
       const { email, password } = req.body;
@@ -31,7 +56,7 @@ export class AuthController {
     }
   }
 
-  // POST /api/auth/forgot-password
+
   static async forgotPassword(req: Request, res: Response) {
     try {
       const { email } = req.body;
@@ -56,4 +81,8 @@ export class AuthController {
       res.status(400).json({ error: err.message });
     }
   }
+
+  // static  async verification(_req: Request, res: Response) {
+  //
+  // }
 }

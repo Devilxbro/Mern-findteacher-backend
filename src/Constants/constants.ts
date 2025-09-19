@@ -38,4 +38,12 @@ export const ROUTES = {
         DASHBOARD: "/dashboard",
         USERS: "/users",
     },
+  UPLOAD: {
+    ROOT: `${API_BASE}/upload`,
+    IMAGE: "/image",
+    DOCUMENT: "/document",
+    VIDEO: "/video",
+    AUDIO: "/audio",
+    MULTIPLE_IMAGES: "/multiple-images",
+  },
 };
