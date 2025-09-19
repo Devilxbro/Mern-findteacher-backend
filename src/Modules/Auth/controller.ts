@@ -5,13 +5,14 @@ export class AuthController {
   // POST /api/auth/signup
   static async signup(req: Request, res: Response) {
     try {
-      const { firstName, lastName, email, password, confirmPassword } = req.body;
+      const { firstName, lastName, email, password, confirmPassword, role  } = req.body;
       const result = await AuthService.signup({
         firstName,
         lastName,
         email,
         password,
         confirmPassword,
+        role
       });
       res.status(201).json({ message: "User created successfully", user: result });
     } catch (err: any) {
@@ -41,7 +42,7 @@ export class AuthController {
     }
   }
 
-  // POST /api/auth/reset-password
+
   static async resetPassword(req: Request, res: Response) {
     try {
       const { token, newPassword, confirmPassword } = req.body;

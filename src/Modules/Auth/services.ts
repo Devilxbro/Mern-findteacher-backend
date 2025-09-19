@@ -6,11 +6,11 @@ import {
   LoginInput,
   ResetPasswordInput,
 } from "./Types";
-
+import { hashPassword } from "../../Middleware/encrypt.ts"; // adjust the import path
 export class AuthService {
-  // User Signup
+
   static async signup(input: SignupInput) {
-    const { firstName, lastName, email, password, confirmPassword } = input;
+      const { firstName, lastName, email, password, confirmPassword, role } = input;
 
     if (password !== confirmPassword) {
       throw new Error("Passwords do not match.");
@@ -20,6 +20,7 @@ export class AuthService {
     if (existingUser) {
       throw new Error("Email is already registered.");
     }
+    const hashedPassword = await hashPassword(password);
 
     // Assume password is already hashed
     const newUser = new UserModel({
@@ -27,14 +28,15 @@ export class AuthService {
       lastName,
       fullName: `${firstName} ${lastName}`,
       email,
-      password, // store as-is
+        role: role,
+      password : hashedPassword,
     });
 
     await newUser.save();
     return newUser;
   }
 
-  // User Login
+
   static async login(input: LoginInput) {
     const { email, password } = input;
 

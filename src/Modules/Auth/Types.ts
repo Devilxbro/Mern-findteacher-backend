@@ -6,6 +6,7 @@ export interface SignupInput {
   email: string;
   password: string;
   confirmPassword: string;
+  role?: "student" | "teacher" | "admin";
 }
 
 export interface LoginInput {
