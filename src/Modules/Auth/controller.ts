@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
-import { AuthService } from "./services";
+import { Request, Response } from 'express';
+import { AuthService } from './services';
+import { AuthRequest } from '../../Middleware/Middleware.ts';
 
 export class AuthController {
-
   static async signup(req: Request, res: Response) {
     try {
       const {
@@ -39,34 +39,39 @@ export class AuthController {
         highestQualificationPerSubject,
       });
 
-      res.status(201).json({success: true, message: "User created successfully", user: result });
-    } catch (err: any) {
-      res.status(400).json({ error: err.message });
+      res.status(201).json({
+        success: true,
+        message: 'User created successfully',
+        user: result,
+      });
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
     }
   }
-
 
   static async login(req: Request, res: Response) {
     try {
       const { email, password } = req.body;
       const token = await AuthService.login({ email, password });
-      res.status(200).json({success: true, message: "Login successful", token });
-    } catch (err: any) {
-      res.status(400).json({ error: err.message });
+      res
+        .status(200)
+        .json({ success: true, message: 'Login successful', token });
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
     }
   }
-
 
   static async forgotPassword(req: Request, res: Response) {
     try {
       const { email } = req.body;
       const token = await AuthService.forgotPassword(email);
-      res.status(200).json({success: true, message: "Reset token generated", token });
-    } catch (err: any) {
-      res.status(400).json({ error: err.message });
+      res
+        .status(200)
+        .json({ success: true, message: 'Reset token generated', token });
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
     }
   }
-
 
   static async resetPassword(req: Request, res: Response) {
     try {
@@ -77,12 +82,33 @@ export class AuthController {
         confirmPassword,
       });
       res.status(200).json({ message: result });
-    } catch (err: any) {
-      res.status(400).json({ error: err.message });
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
     }
   }
 
-  // static  async verification(_req: Request, res: Response) {
-  //
-  // }
+
+  static async getAllUsers(_req: Request, res: Response) {
+    try {
+      const users = await AuthService.getAllUsers();
+      res.status(200).json({ success: true, data: users });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
+  // User-specific detail
+  static async getSpecificUser(req: AuthRequest, res: Response) {
+    try {
+      const userId = req.user?.userId;
+      if (!userId) {
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
+      }
+
+      const user = await AuthService.getSpecificUser(userId);
+      res.status(200).json({ success: true, data: user });
+    } catch (error: any) {
+      res.status(404).json({ success: false, message: error.message });
+    }
+  }
 }

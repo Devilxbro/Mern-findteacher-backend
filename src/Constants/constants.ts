@@ -17,6 +17,8 @@ export const ROUTES = {
         FORGOT_PASSWORD: "/forgot-password",
         RESET_PASSWORD: "/reset-password",
         REFRESH_TOKEN: "/refresh-token",
+        LISTING_PARAMS: "/listing",
+        DETAIL_PARAMS: "/detail",
     },
 
     USER: {
