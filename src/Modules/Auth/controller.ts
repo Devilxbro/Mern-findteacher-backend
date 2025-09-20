@@ -39,7 +39,7 @@ export class AuthController {
         highestQualificationPerSubject,
       });
 
-      res.status(201).json({ message: "User created successfully", user: result });
+      res.status(201).json({success: true, message: "User created successfully", user: result });
     } catch (err: any) {
       res.status(400).json({ error: err.message });
     }
@@ -50,7 +50,7 @@ export class AuthController {
     try {
       const { email, password } = req.body;
       const token = await AuthService.login({ email, password });
-      res.status(200).json({ message: "Login successful", token });
+      res.status(200).json({success: true, message: "Login successful", token });
     } catch (err: any) {
       res.status(400).json({ error: err.message });
     }
@@ -61,7 +61,7 @@ export class AuthController {
     try {
       const { email } = req.body;
       const token = await AuthService.forgotPassword(email);
-      res.status(200).json({ message: "Reset token generated", token });
+      res.status(200).json({success: true, message: "Reset token generated", token });
     } catch (err: any) {
       res.status(400).json({ error: err.message });
     }

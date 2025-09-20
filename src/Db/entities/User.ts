@@ -13,7 +13,7 @@ export interface IUser {
   documentId?: string;
   homeAddress: string;
   proofsAddress: string;
-  subjectsOffered: string; // in future we can make it ref obj id
+  subjectsOffered: string[]; // in ,future we can make it ref obj id
   academicQualification: string;
   proofsQualification: string;
   highestQualificationPerSubject: string;
@@ -39,7 +39,7 @@ const userSchema = new Schema<IUserDocument>(
     documentId: { type: String },
     homeAddress: { type: String, required: true },
     proofsAddress: { type: String, required: true },
-    subjectsOffered: { type: String, required: true },
+    subjectsOffered: [{ type: String, required: true }],
     academicQualification: { type: String, required: true },
     proofsQualification: { type: String, required: true },
     highestQualificationPerSubject: { type: String, required: true },
