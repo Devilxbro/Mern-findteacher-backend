@@ -111,4 +111,20 @@ export class AuthController {
       res.status(404).json({ success: false, message: error.message });
     }
   }
+
+    static async googleAuth(req: Request, res: Response) {
+        const { credential } = req.body;
+
+        if (!credential) {
+            return res.status(400).json({ error: 'Missing Google credential token' });
+        }
+
+        try {
+            const result = await AuthService.loginOrSignupWithGoogle(credential);
+            return res.status(200).json(result);
+        } catch (error) {
+            console.error('[Google Auth Error]', error);
+            return res.status(401).json({ error: 'Google authentication failed' });
+        }
+    }
 }

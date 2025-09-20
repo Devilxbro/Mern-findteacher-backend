@@ -19,6 +19,7 @@ export const ROUTES = {
         REFRESH_TOKEN: "/refresh-token",
         LISTING_PARAMS: "/listing",
         DETAIL_PARAMS: "/detail",
+        GOOGLE_PARAMS: "/google",
     },
 
     USER: {

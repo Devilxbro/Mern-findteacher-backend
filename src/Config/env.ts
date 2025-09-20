@@ -7,7 +7,8 @@ interface EnvConfig {
   API_URL: string;
   DEBUG: boolean;
   MONGO_URI: string;
-  JWT_SECRET: string; // Fix: type should be string
+  JWT_SECRET: string;
+  GOOGLE_CLIENT_ID:string;// Fix: type should be string
 }
 
 const envConfig = (): EnvConfig => {

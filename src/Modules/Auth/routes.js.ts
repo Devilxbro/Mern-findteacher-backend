@@ -25,6 +25,11 @@ router.get(
   authMiddleware,
   AuthController.getSpecificUser,
 );
+
+router.post(
+    ROUTES.AUTH.GOOGLE_PARAMS,
+    AuthController.googleAuth,
+)
 // router.post(ROUTES.AUTH.LOGOUT, AuthController.logout);
 // router.post(ROUTES.AUTH.REFRESH_TOKEN, AuthController.refreshToken);
 
