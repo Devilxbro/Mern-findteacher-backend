@@ -16,6 +16,8 @@ export interface SignupInput {
   academicQualification: string;
   proofsQualification: string;
   highestQualificationPerSubject: string;
+  userProfilePicture?:string,
+  description?:string,
 }
 
 export interface LoginInput {
