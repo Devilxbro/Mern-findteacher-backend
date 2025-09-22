@@ -5,11 +5,11 @@ export interface SignupInput {
   title: string;
   firstName: string;
   lastName: string;
-  email: string;
+  email: string | null;
   password: string;
   confirmPassword: string;
   role?: "student" | "teacher" | "admin";
-  documentId?: string;
+  documentId?: string | null;
   homeAddress: string;
   proofsAddress: string;
   subjectsOffered: string;

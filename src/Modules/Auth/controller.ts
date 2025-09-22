@@ -87,7 +87,6 @@ export class AuthController {
     }
   }
 
-
   static async getAllUsers(_req: Request, res: Response) {
     try {
       const users = await AuthService.getAllUsers();
@@ -102,7 +101,9 @@ export class AuthController {
     try {
       const userId = req.user?.userId;
       if (!userId) {
-        return res.status(401).json({ success: false, message: 'Unauthorized' });
+        return res
+          .status(401)
+          .json({ success: false, message: 'Unauthorized' });
       }
 
       const user = await AuthService.getSpecificUser(userId);
@@ -112,36 +113,39 @@ export class AuthController {
     }
   }
 
-    static async googleAuth(req: Request, res: Response) {
-        const { credential } = req.body;
+  static async googleAuth(req: Request, res: Response) {
+    const { credential } = req.body;
 
-        if (!credential) {
-            return res.status(400).json({ error: 'Missing Google credential token' });
-        }
-
-        try {
-            const result = await AuthService.loginOrSignupWithGoogle(credential);
-          return res.status(200).json({ success: true, result });
-
-        } catch (error) {
-            console.error('[Google Auth Error]', error);
-            return res.status(401).json({ error: 'Google authentication failed' });
-        }
+    if (!credential) {
+      return res.status(400).json({ error: 'Missing Google credential token' });
     }
 
-  static async editProfile(req: Request, res: Response) {
-    const { userId, ...updates } = req.body;
+    try {
+      const result = await AuthService.loginOrSignupWithGoogle(credential);
+      return res.status(200).json({ success: true, result });
+    } catch (error) {
+      console.error('[Google Auth Error]', error);
+      return res.status(401).json({ error: 'Google authentication failed' });
+    }
+  }
+
+  static async editProfile(req: AuthRequest, res: Response) {
+    const userId = req.user?.userId;
 
     if (!userId) {
-      return res.status(400).json({ error: "Missing userId in request body." });
+      return res
+        .status(401)
+        .json({ error: 'Unauthorized: missing user ID in token.' });
     }
+
+    const updates = { ...req.body };
 
     try {
       const updatedUser = await AuthService.updateUserProfile(userId, updates);
       return res.status(200).json({ success: true, user: updatedUser });
     } catch (error: any) {
-      console.error("[Edit Profile Error]", error);
-      return res.status(400).json({ error: error.message || "Update failed." });
+      console.error('[Edit Profile Error]', error);
+      return res.status(400).json({ error: error.message || 'Update failed.' });
     }
   }
 }

@@ -181,7 +181,7 @@ export class AuthService {
         role: 'user',
         title: 'N/A',
         userProfilePicture: '',
-        description:'',
+        description: '',
         googleId,
         firstName: name?.split(' ')[0] || 'N/A',
         lastName: name?.split(' ').slice(1).join(' ') || 'N/A',
@@ -205,29 +205,42 @@ export class AuthService {
     return { token, user };
   }
 
-  static async updateUserProfile(userId: string, updates: Partial<IUser>) {
-    try {
-      const disallowedFields = ['password'];
-      disallowedFields.forEach((field) => {
-        if (updates[field as keyof IUser]) {
-          delete updates[field as keyof IUser];
+    static async updateUserProfile(userId: string, updates: Partial<IUser>) {
+        try {
+            const disallowedFields = ['password'];
+            disallowedFields.forEach((field) => {
+                if (updates[field as keyof IUser] !== undefined) {
+                    delete updates[field as keyof IUser];
+                }
+            });
+
+            // Sanitize updates: skip null or empty string values
+            const sanitizedUpdates: Partial<IUser> = {};
+            Object.keys(updates).forEach((key) => {
+                const k = key as keyof IUser;
+                const value = updates[k];
+
+                // Skip null or empty string values
+                if (value !== null && value !== '' && value !== undefined) {
+                    sanitizedUpdates[k] = value as any;
+                }
+            });
+
+            const updatedUser = await UserModel.findByIdAndUpdate(
+                userId,
+                { $set: sanitizedUpdates },
+                { new: true, runValidators: true, omitUndefined: true } // omitUndefined ensures keys not in sanitizedUpdates are ignored
+            ).select('-password -resetPasswordToken -resetPasswordExpires');
+
+            if (!updatedUser) {
+                throw new Error('User not found.');
+            }
+
+            return updatedUser;
+        } catch (error) {
+            console.error('Error updating user profile:', error);
+            throw new Error('Failed to update user profile.');
         }
-      });
-
-      const updatedUser = await UserModel.findByIdAndUpdate(
-        userId,
-        { $set: updates },
-        { new: true, runValidators: true },
-      ).select('-password -resetPasswordToken -resetPasswordExpires');
-
-      if (!updatedUser) {
-        throw new Error('User not found.');
-      }
-
-      return updatedUser;
-    } catch (error) {
-      console.error('Error updating user profile:', error);
-      throw new Error('Failed to update user profile.');
     }
-  }
+
 }
