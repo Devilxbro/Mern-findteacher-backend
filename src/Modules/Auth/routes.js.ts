@@ -29,6 +29,12 @@ router.get(
 router.post(
     ROUTES.AUTH.GOOGLE_PARAMS,
     AuthController.googleAuth,
+);
+
+router.put(
+  ROUTES.AUTH.EDITOR,
+  authMiddleware,
+  AuthController.editProfile,
 )
 // router.post(ROUTES.AUTH.LOGOUT, AuthController.logout);
 // router.post(ROUTES.AUTH.REFRESH_TOKEN, AuthController.refreshToken);

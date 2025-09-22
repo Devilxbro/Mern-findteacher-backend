@@ -32,7 +32,7 @@ const userSchema = new Schema<IUserDocument>(
     lastName: { type: String, required: true, trim: true },
     fullName: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
-    password: { type: String, required: true },
+    password: { type: String, required: false },
     role: { type: String, enum: ["student", "teacher", "admin", "user"], required: true },
     isActive: { type: Boolean, default: true },
     isVerified: { type: Boolean, default: false },

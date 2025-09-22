@@ -121,10 +121,27 @@ export class AuthController {
 
         try {
             const result = await AuthService.loginOrSignupWithGoogle(credential);
-            return res.status(200).json(result);
+          return res.status(200).json({ success: true, result });
+
         } catch (error) {
             console.error('[Google Auth Error]', error);
             return res.status(401).json({ error: 'Google authentication failed' });
         }
     }
+
+  static async editProfile(req: Request, res: Response) {
+    const { userId, ...updates } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({ error: "Missing userId in request body." });
+    }
+
+    try {
+      const updatedUser = await AuthService.updateUserProfile(userId, updates);
+      return res.status(200).json({ success: true, user: updatedUser });
+    } catch (error: any) {
+      console.error("[Edit Profile Error]", error);
+      return res.status(400).json({ error: error.message || "Update failed." });
+    }
+  }
 }

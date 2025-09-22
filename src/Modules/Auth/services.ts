@@ -2,7 +2,7 @@
 import envConfig from '../../Config/env.ts';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import { UserModel } from '../../Db/entities/User';
+import { UserModel , IUser} from '../../Db/entities/User';
 import { SignupInput, LoginInput, ResetPasswordInput } from './Types';
 import { hashPassword, comparePassword } from '../../Middleware/encrypt';
 import { OAuth2Client } from 'google-auth-library';
@@ -158,6 +158,7 @@ export class AuthService {
             idToken: credential,
             audience: config.GOOGLE_CLIENT_ID,
         });
+        console.log("----------->",config.GOOGLE_CLIENT_ID);
 
         const payload = ticket.getPayload();
         if (!payload) throw new Error('Invalid Google token');
@@ -174,9 +175,18 @@ export class AuthService {
                 password: '',
                 isVerified: true,
                 isActive: true,
-                authProvider: 'google',
-                googleId,
                 role: 'user',
+                title: 'N/A',
+                googleId,
+                firstName: name?.split(' ')[0] || 'N/A',
+                lastName: name?.split(' ').slice(1).join(' ') || 'N/A',
+
+                // changed: save strings instead of arrays/objects
+                homeAddress: 'N/A',
+                proofsAddress: '[]',              // store empty array as JSON string
+                academicQualification: 'N/A',
+                proofsQualification: '[]',        // store empty array as JSON string
+                highestQualificationPerSubject: '{}', // store empty object as JSON string
             });
             await user.save();
         }
@@ -189,4 +199,33 @@ export class AuthService {
 
         return { token, user };
     }
+
+    static async updateUserProfile(userId: string, updates: Partial<IUser>) {
+        try {
+
+            const disallowedFields = ['password'];
+            disallowedFields.forEach((field) => {
+                if (updates[field as keyof IUser]) {
+                    delete updates[field as keyof IUser];
+                }
+            });
+
+
+            const updatedUser = await UserModel.findByIdAndUpdate(
+                userId,
+                { $set: updates },
+                { new: true, runValidators: true }
+            ).select('-password -resetPasswordToken -resetPasswordExpires');
+
+            if (!updatedUser) {
+                throw new Error('User not found.');
+            }
+
+            return updatedUser;
+        } catch (error) {
+            console.error('Error updating user profile:', error);
+            throw new Error('Failed to update user profile.');
+        }
+    }
+
 }

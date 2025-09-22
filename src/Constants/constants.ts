@@ -5,48 +5,49 @@
  * Keeps our routing consistent and future-proof.
  */
 
-export const API_VERSION = "v1";
+export const API_VERSION = 'v1';
 export const API_BASE = `/api/${API_VERSION}`;
 
 export const ROUTES = {
-    AUTH: {
-        ROOT: `${API_BASE}/auth`,
-        SIGNUP: "/signup",
-        LOGIN: "/login",
-        LOGOUT: "/logout",
-        FORGOT_PASSWORD: "/forgot-password",
-        RESET_PASSWORD: "/reset-password",
-        REFRESH_TOKEN: "/refresh-token",
-        LISTING_PARAMS: "/listing",
-        DETAIL_PARAMS: "/detail",
-        GOOGLE_PARAMS: "/google",
-    },
+  AUTH: {
+    ROOT: `${API_BASE}/auth`,
+    SIGNUP: '/signup',
+    LOGIN: '/login',
+    LOGOUT: '/logout',
+    EDITOR: '/edit',
+    FORGOT_PASSWORD: '/forgot-password',
+    RESET_PASSWORD: '/reset-password',
+    REFRESH_TOKEN: '/refresh-token',
+    LISTING_PARAMS: '/listing',
+    DETAIL_PARAMS: '/detail',
+    GOOGLE_PARAMS: '/google',
+  },
 
-    USER: {
-        ROOT: `${API_BASE}/users`,
-        PROFILE: "/profile",
-        UPDATE: "/update",
-        DELETE: "/delete",
-        LIST: "/list",
-    },
+  USER: {
+    ROOT: `${API_BASE}/users`,
+    PROFILE: '/profile',
+    UPDATE: '/update',
+    DELETE: '/delete',
+    LIST: '/list',
+  },
 
-    TEACHERS: {
-        ROOT: `${API_BASE}/teachers`,
-        FIND: "/find",
-        DETAIL: "/:id",
-    },
+  TEACHERS: {
+    ROOT: `${API_BASE}/teachers`,
+    FIND: '/find',
+    DETAIL: '/:id',
+  },
 
-    ADMIN: {
-        ROOT: `${API_BASE}/admin`,
-        DASHBOARD: "/dashboard",
-        USERS: "/users",
-    },
+  ADMIN: {
+    ROOT: `${API_BASE}/admin`,
+    DASHBOARD: '/dashboard',
+    USERS: '/users',
+  },
   UPLOAD: {
     ROOT: `${API_BASE}/upload`,
-    IMAGE: "/image",
-    DOCUMENT: "/document",
-    VIDEO: "/video",
-    AUDIO: "/audio",
-    MULTIPLE_IMAGES: "/multiple-images",
+    IMAGE: '/image',
+    DOCUMENT: '/document',
+    VIDEO: '/video',
+    AUDIO: '/audio',
+    MULTIPLE_IMAGES: '/multiple-images',
   },
 };
