@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Google Sign-In Demo</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            margin-top: 100px;
+        }
+        .response-box {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Login with Google</h1>
+
+<div id="g_id_onload"
+     data-client_id="591528100371-3tbjkh9uh1es0sl40dt1n2skgvsao6sb.apps.googleusercontent.com"
+     data-callback="handleCredentialResponse"
+     data-auto_prompt="false">
+</div>
+
+<div class="g_id_signin"
+     data-type="standard"
+     data-size="large"
+     data-theme="outline"
+     data-text="sign_in_with"
+     data-shape="rectangular"
+     data-logo_alignment="left">
+</div>
+
+<div class="response-box" id="responseBox">
+    <strong>Status:</strong> Waiting for login...
+</div>
+
+<script>
+    async function handleCredentialResponse(response) {
+        const idToken = response.credential;
+
+        document.getElementById('responseBox').innerHTML =
+            `<strong>Status:</strong> Sending ID token to backend...`;
+
+        try {
+            const res = await fetch('https://c33ebe801876.ngrok-free.app/api/v1/auth/google', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ credential: idToken })
+            });
+
+            const data = await res.json();
+
+            document.getElementById('responseBox').innerHTML = `
+          <strong>Status:</strong> Success!<br><br>
+          <strong>JWT Token:</strong> ${data.token}<br><br>
+          <strong>User Info:</strong> <pre>${JSON.stringify(data.user, null, 2)}</pre>
+        `;
+        } catch (err) {
+            console.error('Google login error:', err);
+            document.getElementById('responseBox').innerHTML =
+                `<strong>Status:</strong> Error during login. See console.`;
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -7,7 +7,7 @@ export interface IUser {
   fullName: string;
   email: string;
   password: string;
-  role: "student" | "teacher" | "admin";
+  role: "student" | "teacher" | "admin" |"user";
   isActive: boolean;
   isVerified: boolean;
   documentId?: string;
@@ -33,7 +33,7 @@ const userSchema = new Schema<IUserDocument>(
     fullName: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     password: { type: String, required: true },
-    role: { type: String, enum: ["student", "teacher", "admin"], required: true },
+    role: { type: String, enum: ["student", "teacher", "admin", "user"], required: true },
     isActive: { type: Boolean, default: true },
     isVerified: { type: Boolean, default: false },
     documentId: { type: String },
