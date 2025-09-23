@@ -231,7 +231,7 @@ export class AuthService {
 
     static async updateUserProfile(userId: string, updates: Partial<IUser>) {
         try {
-            const disallowedFields = ["password"];
+            const disallowedFields = ["password", "email"];
             disallowedFields.forEach((field) => {
                 if (updates[field as keyof IUser] !== undefined) {
                     delete updates[field as keyof IUser];
