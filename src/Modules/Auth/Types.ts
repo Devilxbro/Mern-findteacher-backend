@@ -23,6 +23,7 @@ export interface SignupInput {
   highestQualificationPerSubject: string;
   userProfilePicture?: string;
   description?: string;
+  experience?: string;
 }
 
 export interface LoginInput {

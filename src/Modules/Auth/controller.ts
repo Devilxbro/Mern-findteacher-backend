@@ -20,7 +20,8 @@ export class AuthController {
         academicQualification,
         proofsQualification,
         highestQualificationPerSubject,
-        qualifications, // might be JSON string in multipart
+        qualifications,
+        experience// might be JSON string in multipart
 
       } = req.body;
 
@@ -40,6 +41,7 @@ export class AuthController {
         proofsQualification,
         highestQualificationPerSubject,
         qualifications, // might be JSON string in multipart
+        experience
 
       });
 

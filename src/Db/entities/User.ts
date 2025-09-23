@@ -29,6 +29,7 @@ export interface IUser {
   resetPasswordToken?: string;
   resetPasswordExpires?: Date;
   academicQualification?: string;
+  experience?: string;
 }
 
 export interface IUserDocument extends IUser, Document {
@@ -68,6 +69,7 @@ const userSchema = new Schema<IUserDocument>(
     highestQualificationPerSubject: { type: String, required: false },
     resetPasswordToken: { type: String, default: undefined },
     resetPasswordExpires: { type: Date, default: undefined },
+    experience: { type: String, required: false, trim: true },
   },
   { timestamps: true }
 );

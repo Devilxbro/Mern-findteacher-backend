@@ -29,6 +29,7 @@ export class AuthService {
       highestQualificationPerSubject,
       userProfilePicture,
       description,
+      experience
     } = input;
 
     if (password !== confirmPassword) {
@@ -59,6 +60,7 @@ export class AuthService {
       highestQualificationPerSubject,
       userProfilePicture,
       description,
+      experience,
       isActive: true,
       isVerified: false,
     });
@@ -206,7 +208,6 @@ export class AuthService {
         googleId,
         firstName: name?.split(' ')[0] || 'N/A',
         lastName: name?.split(' ').slice(1).join(' ') || 'N/A',
-
         // changed: save strings instead of arrays/objects
         homeAddress: 'N/A',
         proofsAddress: '[]', // store empty array as JSON string
@@ -214,6 +215,7 @@ export class AuthService {
         proofsQualification: '[]', // store empty array as JSON string
         highestQualificationPerSubject: '{}',
         qualifications: [],// store empty object as JSON string
+        experience:''
       });
       await user.save();
     }
