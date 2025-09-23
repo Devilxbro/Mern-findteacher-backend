@@ -21,6 +21,8 @@ export const ROUTES = {
     LISTING_PARAMS: '/listing',
     DETAIL_PARAMS: '/detail',
     GOOGLE_PARAMS: '/google',
+    DELETE_PARAMS: '/delete',
+
   },
 
   USER: {

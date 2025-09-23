@@ -161,4 +161,31 @@ export class AuthController {
       return res.status(400).json({ error: error.message || 'Update failed.' });
     }
   }
+
+  static async deleteProfile(req: AuthRequest, res: Response) {
+    try {
+      const userId = req.user?.userId; // get userId from AuthRequest (JWT)
+      if (!userId) {
+        return res.status(401).json({
+          success: false,
+          message: "Unauthorized: missing user ID in token.",
+        });
+      }
+
+      const result = await AuthService.deleteUser(userId);
+
+      return res.status(200).json({
+        success: true,
+        message: "User profile deleted successfully",
+        data: result,
+      });
+    } catch (error: unknown) {
+      const message =
+          error instanceof Error ? error.message : "Delete failed.";
+      return res.status(400).json({
+        success: false,
+        message,
+      });
+    }
+  }
 }

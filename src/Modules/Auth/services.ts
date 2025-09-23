@@ -279,5 +279,18 @@ export class AuthService {
             throw new Error("Failed to update user profile.");
         }
     }
+    static async deleteUser(userId: string) {
+        const user = await UserModel.findByIdAndDelete(userId);
+
+        if (!user) {
+            throw new Error("User not found.");
+        }
+
+        return {
+            userId: user._id,
+            email: user.email,
+            message: "User deleted successfully",
+        };
+    }
 
 }
