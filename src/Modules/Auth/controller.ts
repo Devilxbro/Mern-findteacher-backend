@@ -20,6 +20,8 @@ export class AuthController {
         academicQualification,
         proofsQualification,
         highestQualificationPerSubject,
+        qualifications, // might be JSON string in multipart
+
       } = req.body;
 
       const result = await AuthService.signup({
@@ -37,6 +39,8 @@ export class AuthController {
         academicQualification,
         proofsQualification,
         highestQualificationPerSubject,
+        qualifications, // might be JSON string in multipart
+
       });
 
       res.status(201).json({
@@ -64,24 +68,31 @@ export class AuthController {
   static async forgotPassword(req: Request, res: Response) {
     try {
       const { email } = req.body;
-      const token = await AuthService.forgotPassword(email);
-      res
-        .status(200)
-        .json({ success: true, message: 'Reset token generated', token });
+
+      // Generate OTP and send email
+      const otp = await AuthService.forgotPassword(email);
+
+      res.status(200).json({
+        success: true,
+        message: 'OTP has been sent to your email',
+        otp, // optional: for testing, remove in production
+      });
     } catch (error: any) {
-      res.status(400).json({ error: error.message });
+      res.status(200).json({ error: error.message });
     }
   }
 
+  // ---------------- OTP-Based Reset Password ----------------
   static async resetPassword(req: Request, res: Response) {
     try {
-      const { token, newPassword, confirmPassword } = req.body;
-      const result = await AuthService.resetPassword({
-        token,
-        newPassword,
-        confirmPassword,
+      const { email, otp, newPassword, confirmPassword } = req.body;
+
+      const result = await AuthService.resetPassword({ email, otp, newPassword, confirmPassword });
+
+      res.status(200).json({
+        success: true,
+        message: result.message,
       });
-      res.status(200).json({ message: result });
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }

@@ -1,28 +1,22 @@
-// import nodemailer from "nodemailer";
-// import envConfig from "../Config/env";
-//
-// const config = envConfig();
-//
-// export const transporter = nodemailer.createTransport({
-//   service: "gmail", // or your email provider
-//   auth: {
-//     user: config.SMTP_USER, // e.g., your_email@gmail.com
-//     pass: config.SMTP_PASS, // e.g., app password
-//   },
-// });
-//
-// export const sendVerificationEmail = async (to: string, otp: string) => {
-//   const mailOptions = {
-//     from: `"YourApp Support" <${config.SMTP_USER}>`,
-//     to,
-//     subject: "Your Verification Code",
-//     html: `
-//       <h2>Welcome to YourApp!</h2>
-//       <p>Your OTP is:</p>
-//       <h3 style="color:blue;">${otp}</h3>
-//       <p>This code will expire in 10 minutes.</p>
-//     `,
-//   };
-//
-//   return transporter.sendMail(mailOptions);
-// };
+// src/Services/EmailTemplates.ts
+
+export const PasswordResetTemplate = (firstName: string, resetLink: string) => `
+<div style="font-family: Arial, sans-serif; line-height: 1.5;">
+  <h2>Hello ${firstName},</h2>
+  <p>You requested to reset your password. Click the link below to reset it:</p>
+  <p><a href="${resetLink}" style="color: #1a73e8;">Reset Password</a></p>
+  <p>If you did not request this, please ignore this email or contact support.</p>
+  <hr/>
+  <p style="font-size: 0.9em; color: gray;">&copy; ${new Date().getFullYear()} My App. All rights reserved.</p>
+</div>
+`;
+
+export const PasswordResetSuccessTemplate = (firstName: string) => `
+<div style="font-family: Arial, sans-serif; line-height: 1.5;">
+  <h2>Hello ${firstName},</h2>
+  <p>Your password has been successfully reset.</p>
+  <p>If you did not perform this action, please contact support immediately.</p>
+  <hr/>
+  <p style="font-size: 0.9em; color: gray;">&copy; ${new Date().getFullYear()} My App. All rights reserved.</p>
+</div>
+`;

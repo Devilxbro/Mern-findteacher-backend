@@ -1,16 +1,17 @@
 import envConfig from '../../Config/env.ts';
 import jwt from 'jsonwebtoken';
-import crypto from 'crypto';
-import { UserModel, IUser } from '../../Db/entities/User';
-import { SignupInput, LoginInput, ResetPasswordInput } from './Types';
+// import crypto from 'crypto';
+import { UserModel, IUser , IQualification} from '../../Db/entities/User';
+import { SignupInput, LoginInput } from './Types';
 import { hashPassword, comparePassword } from '../../Middleware/encrypt';
 import { OAuth2Client } from 'google-auth-library';
-
+import Mailer from "../../Constants/Nodemailer.ts";
+import { PasswordResetTemplate,PasswordResetSuccessTemplate } from "../../Utls/verifiactionmail.ts";
 const config = envConfig();
 const client = new OAuth2Client(config.GOOGLE_CLIENT_ID);
 
 export class AuthService {
-  static async signup(input: SignupInput) {
+  static async signup(input: SignupInput & { qualifications?: IQualification[] }) {
     const {
       title,
       firstName,
@@ -23,7 +24,7 @@ export class AuthService {
       homeAddress,
       proofsAddress,
       subjectsOffered,
-      academicQualification,
+      qualifications,
       proofsQualification,
       highestQualificationPerSubject,
       userProfilePicture,
@@ -53,7 +54,7 @@ export class AuthService {
       homeAddress,
       proofsAddress,
       subjectsOffered,
-      academicQualification,
+      qualifications: qualifications || [],
       proofsQualification,
       highestQualificationPerSubject,
       userProfilePicture,
@@ -65,7 +66,6 @@ export class AuthService {
     await newUser.save();
     return newUser;
   }
-
   static async login(input: LoginInput) {
     const { email, password } = input;
 
@@ -87,47 +87,68 @@ export class AuthService {
 
     return token;
   }
-
   static async forgotPassword(email: string) {
     const user = await UserModel.findOne({ email });
     if (!user) {
-      throw new Error('User not found with this email.');
+      throw new Error("User not found with this email.");
     }
 
-    const token = crypto.randomBytes(20).toString('hex');
-    const expiry = new Date(Date.now() + 3600000); // 1 hour
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiry = new Date(Date.now() + 10 * 60 * 1000); // OTP valid for 10 minutes
 
-    user.resetPasswordToken = token;
+    user.resetPasswordToken = otp;
     user.resetPasswordExpires = expiry;
     await user.save();
 
-    return token;
+    // Send OTP email
+    await Mailer.sendMail({
+      to: user.email ?? "",
+      subject: "Password Reset OTP",
+      html: PasswordResetTemplate(user.firstName ?? "User", otp),
+    });
+    console.log("otp", otp)
+
+    return otp; // optional: return for testing purposes
+
   }
 
-  static async resetPassword(input: ResetPasswordInput) {
-    const { token, newPassword, confirmPassword } = input;
+  static async resetPassword(input: { email: string; otp: string; newPassword: string; confirmPassword: string }) {
+    const { email, otp, newPassword, confirmPassword } = input;
 
     if (newPassword !== confirmPassword) {
-      throw new Error('Passwords do not match.');
+      throw new Error("Passwords do not match.");
     }
 
     const user = await UserModel.findOne({
-      resetPasswordToken: token,
-      resetPasswordExpires: { $gt: new Date() },
+      email,
+      resetPasswordToken: otp,
+      resetPasswordExpires: { $gt: new Date() }, // OTP still valid
     });
 
     if (!user) {
-      throw new Error('Invalid or expired token.');
+      throw new Error("Invalid or expired OTP.");
     }
 
+    // Hash new password
     user.password = await hashPassword(newPassword);
+
+    // Clear OTP fields
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
 
     await user.save();
 
-    return 'Password has been reset successfully.';
+    // Send success email
+    await Mailer.sendMail({
+      to: user.email ?? "",
+      subject: "Password Successfully Reset",
+      html: PasswordResetSuccessTemplate(user.firstName ?? "User"),
+    });
+
+    return { success: true, message: "Password has been reset successfully." };
   }
+
 
   static async getAllUsers() {
     try {
@@ -191,7 +212,8 @@ export class AuthService {
         proofsAddress: '[]', // store empty array as JSON string
         academicQualification: 'N/A',
         proofsQualification: '[]', // store empty array as JSON string
-        highestQualificationPerSubject: '{}', // store empty object as JSON string
+        highestQualificationPerSubject: '{}',
+        qualifications: [],// store empty object as JSON string
       });
       await user.save();
     }

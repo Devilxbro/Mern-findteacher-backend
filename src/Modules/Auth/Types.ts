@@ -1,5 +1,9 @@
-
-
+export interface IQualification {
+  degree: string[];
+  diplomas: string;
+  certificate: string;
+  majorSubjects: string;
+}
 
 export interface SignupInput {
   title: string;
@@ -13,11 +17,12 @@ export interface SignupInput {
   homeAddress: string;
   proofsAddress: string;
   subjectsOffered: string;
-  academicQualification: string;
+  qualifications?: IQualification[]; // <-- updated
   proofsQualification: string;
+  academicQualification:string;
   highestQualificationPerSubject: string;
-  userProfilePicture?:string,
-  description?:string,
+  userProfilePicture?: string;
+  description?: string;
 }
 
 export interface LoginInput {
