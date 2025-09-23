@@ -231,39 +231,52 @@ export class AuthService {
 
     static async updateUserProfile(userId: string, updates: Partial<IUser>) {
         try {
-            const disallowedFields = ['password'];
+            const disallowedFields = ["password"];
             disallowedFields.forEach((field) => {
                 if (updates[field as keyof IUser] !== undefined) {
                     delete updates[field as keyof IUser];
                 }
             });
+            const existingUser = await UserModel.findById(userId);
+            if (!existingUser) {
+                throw new Error("User not found.");
+            }
 
-            // Sanitize updates: skip null or empty string values
-            const sanitizedUpdates: Partial<IUser> = {};
+            if (updates.qualifications && updates.qualifications.length > 0) {
+                updates.qualifications = updates.qualifications.map((newQual, idx) => {
+                    const oldQual = existingUser.qualifications[idx] || {};
+
+                    return {
+                        degree: newQual.degree && newQual.degree.length > 0 ? newQual.degree : oldQual.degree,
+                        diplomas: newQual.diplomas && newQual.diplomas.length > 0 ? newQual.diplomas : oldQual.diplomas,
+                        certificate: newQual.certificate && newQual.certificate.length > 0 ? newQual.certificate : oldQual.certificate,
+                        majorSubjects: newQual.majorSubjects && newQual.majorSubjects.length > 0
+                            ? newQual.majorSubjects
+                            : oldQual.majorSubjects,
+                    };
+                });
+            }
+
+
             Object.keys(updates).forEach((key) => {
                 const k = key as keyof IUser;
                 const value = updates[k];
 
-                // Skip null or empty string values
-                if (value !== null && value !== '' && value !== undefined) {
-                    sanitizedUpdates[k] = value as any;
+                if (value === null || value === "" || value === undefined) {
+                    (updates as any)[k] = existingUser[k];
                 }
             });
 
             const updatedUser = await UserModel.findByIdAndUpdate(
                 userId,
-                { $set: sanitizedUpdates },
-                { new: true, runValidators: true, omitUndefined: true } // omitUndefined ensures keys not in sanitizedUpdates are ignored
-            ).select('-password -resetPasswordToken -resetPasswordExpires');
-
-            if (!updatedUser) {
-                throw new Error('User not found.');
-            }
+                { $set: updates },
+                { new: true, runValidators: true }
+            ).select("-password -resetPasswordToken -resetPasswordExpires");
 
             return updatedUser;
         } catch (error) {
-            console.error('Error updating user profile:', error);
-            throw new Error('Failed to update user profile.');
+            console.error("Error updating user profile:", error);
+            throw new Error("Failed to update user profile.");
         }
     }
 

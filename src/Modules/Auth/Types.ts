@@ -1,8 +1,8 @@
 export interface IQualification {
   degree: string[];
-  diplomas: string;
-  certificate: string;
-  majorSubjects: string;
+  diplomas: string[];
+  certificate: string[];
+  majorSubjects?: string[] | null;
 }
 
 export interface SignupInput {

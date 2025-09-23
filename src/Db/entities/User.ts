@@ -2,9 +2,9 @@ import { Schema, model, Document } from "mongoose";
 
 export interface IQualification {
   degree: string[];
-  diplomas: string;
-  certificate: string;
-  majorSubjects: string;
+  diplomas: string[];
+  certificate: string[];
+  majorSubjects?: string[] | null;
 }
 
 export interface IUser {
@@ -39,9 +39,9 @@ export interface IUserDocument extends IUser, Document {
 const QualificationSchema = new Schema<IQualification>(
   {
     degree: [{ type: String, required: false, trim: true }],
-    diplomas: { type: String, required: false, trim: true },
-    certificate: { type: String, required: false, trim: true },
-    majorSubjects: { type: String, required: false },
+    diplomas: [{ type: String, required: false, trim: true }],
+    certificate: [{ type: String, required: false, trim: true }],
+    majorSubjects: [{ type: String, required: false }],
   },
   { _id: false }
 );
