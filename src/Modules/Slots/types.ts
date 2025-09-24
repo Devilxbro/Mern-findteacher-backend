@@ -16,6 +16,8 @@ export interface CreateSlotDto {
 }
 
 export interface UpdateSlotDto {
+  date?: Date | string;   // <-- add this
+
   startTime?: Date;
   endTime?: Date;
   durationMinutes?: number;

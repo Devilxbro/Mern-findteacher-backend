@@ -59,5 +59,13 @@ export const ROUTES = {
     UPDATE: '/update',
     LIST: '/list',
 
-  }
+  },
+  BOOKINGS: {
+    ROOT: `${API_BASE}/bookings`,
+    AVAILABLE: '/available',
+    CREATE: '/book',
+    CANCEL: '/cancel',
+  },
+
+
 };

@@ -24,12 +24,12 @@ export interface IBookingDocument extends IBooking, Document {
 
 const BookingSchema = new Schema<IBookingDocument>(
     {
-        slotId: { type: Schema.Types.ObjectId, ref: "Slot", required: true, index: true },
-        teacherId: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
-        studentId: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
-        startTime: { type: Date, required: true },
-        endTime: { type: Date, required: true },
-        durationMinutes: { type: Number, required: true },
+        slotId: { type: Schema.Types.ObjectId, ref: "Slot", required: false, index: true },
+        teacherId: { type: Schema.Types.ObjectId, ref: "User", required: false, index: true },
+        studentId: { type: Schema.Types.ObjectId, ref: "User", required: false, index: true },
+        startTime: { type: Date, required: false },
+        endTime: { type: Date, required: false },
+        durationMinutes: { type: Number, required: false },
         status: { type: String, enum: ["booked", "cancelled", "completed", "no-show"], default: "booked" },
         pricePaid: { type: Number, default: 0 },
         currency: { type: String, default: "USD" },

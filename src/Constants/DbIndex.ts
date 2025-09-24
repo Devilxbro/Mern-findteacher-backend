@@ -11,18 +11,27 @@
 
 import { connectDB, disconnectDB } from "../Db/connection.ts"; // Your existing connect/disconnect
 import { UserModel } from "../Db/entities/User.ts";
-// import { TeacherModel } from "./entities/Teacher"; // example
-// import { BusinessModel } from "./entities/Business"; // example
-// import { EventModel } from "./entities/Event"; // example
+import { BookingModel } from "../Db/entities/Bookings.ts";
+import { PaymentModel } from "../Db/entities/Payments.ts";
+import { SlotModel } from "../Db/entities/Slots";
 
-// Export all models for easy access
 export const models = {
-    User: UserModel,
-    // Teacher: TeacherModel,
-    // Business: BusinessModel,
-    // Event: EventModel,
-    // Add new models here
+  User: UserModel,
+  Slot: SlotModel,
+  Booking: BookingModel,
+  Payment: PaymentModel
 };
 
-// Re-export connection functions
+
+// // Export all models for easy access
+// export const models = {
+//     User: UserModel,
+//     // Teacher: TeacherModel,
+//     // Business: BusinessModel,
+//     // Event: EventModel,
+//     // Add new models here
+// };
+
+
+
 export { connectDB, disconnectDB };
