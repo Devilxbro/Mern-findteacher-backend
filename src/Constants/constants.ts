@@ -52,4 +52,12 @@ export const ROUTES = {
     AUDIO: '/audio',
     MULTIPLE_IMAGES: '/multiple-images',
   },
+  SLOTS:{
+    ROOT: `${API_BASE}/slots`,
+    CREATE: '/create',
+    DELETE: '/delete',
+    UPDATE: '/update',
+    LIST: '/list',
+
+  }
 };
