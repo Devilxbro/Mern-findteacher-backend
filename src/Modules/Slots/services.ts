@@ -28,24 +28,42 @@ export class SlotService {
   }
 
   /**
-   * Normalize time relative to a base date
-   * - time: "HH:mm" or "YYYY-MM-DD"
-   * - date: base date "YYYY-MM-DD"
+   * Normalize time relative to a base date.
+   * Supports:
+   *  - "HH:mm"  (24h)
+   *  - "hh:mm A" (12h with AM/PM)
+   *  - Full ISO date
    */
   private normalizeTime(date: string | Date, time: string | Date): Date {
     const baseDate = this.normalizeDate(date);
     if (time instanceof Date) return time;
 
-    // If time is HH:mm, merge with base date
-    if (/^\d{2}:\d{2}$/.test(time)) {
-      const [hours, minutes] = time.split(":").map(Number);
-      baseDate.setUTCHours(hours, minutes, 0, 0);
-      return baseDate;
+    // 12-hour or 24-hour with AM/PM support
+    const timeRegex12 = /^(\d{1,2}):(\d{2})\s?(AM|PM)$/i;
+    const timeRegex24 = /^(\d{2}):(\d{2})$/;
+
+    let hours: number;
+    let minutes: number;
+
+    if (timeRegex12.test(time)) {
+      const [, h, m, meridian] = time.match(timeRegex12)!;
+      hours = parseInt(h, 10);
+      minutes = parseInt(m, 10);
+      if (meridian.toUpperCase() === "PM" && hours < 12) hours += 12;
+      if (meridian.toUpperCase() === "AM" && hours === 12) hours = 0;
+    } else if (timeRegex24.test(time)) {
+      const [, h, m] = time.match(timeRegex24)!;
+      hours = parseInt(h, 10);
+      minutes = parseInt(m, 10);
+    } else {
+      // fallback: try parsing as full date
+      return new Date(time);
     }
 
-    // Otherwise treat as full date string
-    return new Date(time);
+    baseDate.setHours(hours, minutes, 0, 0);
+    return baseDate;
   }
+
 
   /**
    * Create a new slot
@@ -63,17 +81,18 @@ export class SlotService {
       throw new Error("`date`, `startTime`, and `endTime` are required.");
     }
 
-    // 2️⃣ Normalize dates
+    // 2️⃣ Normalize date and times
     const baseDate = data.date instanceof Date ? data.date : data.date;
     const startTime = this.normalizeTime(baseDate, data.startTime);
-    const endTime = this.normalizeTime(baseDate, data.endTime);
+    let endTime = this.normalizeTime(baseDate, data.endTime);
 
-    if (startTime >= endTime) {
-      throw new Error("Invalid time range: startTime must be before endTime.");
+    // 3️⃣ Handle overnight slots
+    if (endTime <= startTime) {
+      endTime.setDate(endTime.getDate() + 1);
     }
 
-    // 3️⃣ Numeric coercion
-    const durationMinutes = Number(data.durationMinutes);
+    // 4️⃣ Numeric fields
+    const durationMinutes = Number(data.durationMinutes) || Math.floor((endTime.getTime() - startTime.getTime()) / 60000);
     const price = data.price !== undefined ? Number(data.price) : 0;
     const capacity = data.capacity !== undefined ? Number(data.capacity) : 1;
 
@@ -81,14 +100,14 @@ export class SlotService {
       throw new Error("durationMinutes must be a positive number.");
     }
 
-    // 4️⃣ Overlap check
+    // 5️⃣ Overlap check
     const overlap = await SlotModel.findOne({
       teacherId: new Types.ObjectId(data.teacherId),
       $or: [{ startTime: { $lt: endTime }, endTime: { $gt: startTime } }],
     });
     if (overlap) throw new Error("Slot overlaps with an existing slot.");
 
-    // 5️⃣ Create slot
+    // 6️⃣ Create slot
     const slot = await SlotModel.create({
       teacherId: data.teacherId,
       date: this.normalizeDate(baseDate),

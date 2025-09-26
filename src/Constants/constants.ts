@@ -22,7 +22,6 @@ export const ROUTES = {
     DETAIL_PARAMS: '/detail',
     GOOGLE_PARAMS: '/google',
     DELETE_PARAMS: '/delete',
-
   },
 
   USER: {
@@ -39,11 +38,6 @@ export const ROUTES = {
     DETAIL: '/:id',
   },
 
-  ADMIN: {
-    ROOT: `${API_BASE}/admin`,
-    DASHBOARD: '/dashboard',
-    USERS: '/users',
-  },
   UPLOAD: {
     ROOT: `${API_BASE}/upload`,
     IMAGE: '/image',
@@ -52,13 +46,26 @@ export const ROUTES = {
     AUDIO: '/audio',
     MULTIPLE_IMAGES: '/multiple-images',
   },
-  SLOTS:{
+  SLOTS: {
     ROOT: `${API_BASE}/slots`,
     CREATE: '/create',
     DELETE: '/delete',
     UPDATE: '/update',
     LIST: '/list',
+  },
+  ADMIN: {
+    ROOT: `${API_BASE}/admin`,
+    DASHBOARD: '/dashboard',
+    USERS: '/users',
+  },
 
+  ANALYTICS: {
+    ROOT: `${API_BASE}/admin/analytics`,
+    OVERVIEW: '/overview',
+    USER_GROWTH: '/user-growth',
+    TEACHER_PERFORMANCE: '/teacher-performance',
+    SUBSCRIPTION_STATS: '/subscription-stats',
+    BOOKINGS: '/bookings',
   },
   BOOKINGS: {
     ROOT: `${API_BASE}/bookings`,
@@ -66,6 +73,4 @@ export const ROUTES = {
     CREATE: '/book',
     CANCEL: '/cancel',
   },
-
-
 };
