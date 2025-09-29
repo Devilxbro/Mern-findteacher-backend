@@ -26,7 +26,7 @@ export const models = {
 // // Export all models for easy access
 // export const models = {
 //     User: UserModel,
-//     // Chats: TeacherModel,
+//     // Events: TeacherModel,
 //     // Business: BusinessModel,
 //     // Event: EventModel,
 //     // Add new models here

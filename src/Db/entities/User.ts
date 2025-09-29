@@ -32,6 +32,10 @@ export interface IUser {
   experience?: string;
   createdAt?: Date;
   updatedAt?: Date;
+    isPremium?: boolean;          // true if teacher is premium
+    isFeatured?: boolean;         // true if teacher is featured
+    rating?: number;              // average rating (float, e.g., 4.5)
+    totalReviews?: number;        // number of reviews
 
 }
 
@@ -73,6 +77,10 @@ const userSchema = new Schema<IUserDocument>(
     resetPasswordToken: { type: String, default: undefined },
     resetPasswordExpires: { type: Date, default: undefined },
     experience: { type: String, required: false, trim: true },
+      isPremium: { type: Boolean, default: false },
+      isFeatured: { type: Boolean, default: false },
+      rating: { type: Number, default: 0 },      // average rating
+      totalReviews: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

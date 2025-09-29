@@ -31,12 +31,12 @@ export const ROUTES = {
     DELETE: '/delete',
     LIST: '/list',
   },
-
-  TEACHERS: {
-    ROOT: `${API_BASE}/teachers`,
-    FIND: '/find',
-    DETAIL: '/:id',
-  },
+  //
+  // TEACHERS: {
+  //   ROOT: `${API_BASE}/teachers`,
+  //   FIND: '/find',
+  //   DETAIL: '/:id',
+  // },
 
   UPLOAD: {
     ROOT: `${API_BASE}/upload`,
@@ -70,6 +70,22 @@ export const ROUTES = {
     FEEDBACK: "/feedback", // GET feedback from users
     EXPORT: "/export", // GET export CSV/Excel
   },
+  TEACHERS: {
+    ROOT: `${API_BASE}/teachers`,
+    LIST: '/',
+    DETAIL: '/:id',
+    REVIEWS: '/:id/reviews',
+    ADD_REVIEW: '/:id/review',
+  },
+  EVENTS: {
+    ROOT: `${API_BASE}/admin/events`,
+    CREATE: '/create',
+    UPDATE: '/update',
+    DELETE: '/delete',
+    LIST: '/list',
+    DETAIL: '/detail',
+  },
+
 
 
   ANALYTICS: {
