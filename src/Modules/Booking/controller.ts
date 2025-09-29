@@ -37,20 +37,18 @@ export class BookingController {
       res.status(400).json({ success: false, error: error.message });
     }
   }
-
-
   static async history(req: AuthRequest, res: Response) {
     try {
       const userId = req.user?.userId;
-      const role = req.user?.role as "student" | "teacher";
+      if (!userId) throw new Error("Unauthorized");
+
       const status = req.query.status as string | undefined;
 
-      if (!userId || !role) throw new Error("Unauthorized");
-
-      const history = await bookingService.getAppointmentHistory(userId, role, status);
+      const history = await bookingService.getAppointmentHistory(userId, status);
       res.status(200).json({ success: true, history });
     } catch (error: any) {
       res.status(400).json({ success: false, error: error.message });
     }
   }
+
 }
