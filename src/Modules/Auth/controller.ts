@@ -21,9 +21,21 @@ export class AuthController {
         proofsQualification,
         highestQualificationPerSubject,
         qualifications,
-        experience// might be JSON string in multipart
+        experience,
+        latitude,
+        longitude
+
 
       } = req.body;
+      let location: { type: "Point"; coordinates: [number, number] } | undefined;
+
+      if (latitude && longitude) {
+        location = {
+          type: "Point",
+          coordinates: [Number(longitude), Number(latitude)] as [number, number],
+        };
+      }
+
 
       const result = await AuthService.signup({
         title,
@@ -41,7 +53,8 @@ export class AuthController {
         proofsQualification,
         highestQualificationPerSubject,
         qualifications, // might be JSON string in multipart
-        experience
+        experience,
+        location
 
       });
 

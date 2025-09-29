@@ -24,6 +24,10 @@ export interface SignupInput {
   userProfilePicture?: string;
   description?: string;
   experience?: string;
+  location?: {
+    type: 'Point';
+    coordinates: [number, number]; // [longitude, latitude]
+  };
 }
 
 export interface LoginInput {

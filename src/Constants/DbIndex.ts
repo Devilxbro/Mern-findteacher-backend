@@ -14,12 +14,14 @@ import { UserModel } from "../Db/entities/User.ts";
 import { BookingModel } from "../Db/entities/Bookings.ts";
 import { PaymentModel } from "../Db/entities/Payments.ts";
 import { SlotModel } from "../Db/entities/Slots";
+import {EventModel} from "../Db/entities/Events.ts"
 
 export const models = {
   User: UserModel,
   Slot: SlotModel,
   Booking: BookingModel,
-  Payment: PaymentModel
+  Payment: PaymentModel,
+  Event:EventModel
 };
 
 
