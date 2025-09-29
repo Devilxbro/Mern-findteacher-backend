@@ -58,6 +58,19 @@ export const ROUTES = {
     DASHBOARD: '/dashboard',
     USERS: '/users',
   },
+  ADMIN_USER_MANAGEMENT: {
+    ROOT: `${API_BASE}/admin/users`,
+    LIST: "/list", // GET all users
+    DETAIL: "/:id", // GET one user
+    STATUS: "/:id/status", // PUT block/unblock
+    DELETE: "/:id", // DELETE user
+    BOOKINGS: "/:id/bookings", // GET bookings by user
+    PAYMENTS: "/:id/payments", // GET payments by user
+    ACTIVE: "/active", // GET currently active users
+    FEEDBACK: "/feedback", // GET feedback from users
+    EXPORT: "/export", // GET export CSV/Excel
+  },
+
 
   ANALYTICS: {
     ROOT: `${API_BASE}/admin/analytics`,

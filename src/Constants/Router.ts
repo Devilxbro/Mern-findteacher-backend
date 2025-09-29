@@ -13,6 +13,7 @@ import uploadRoutes from "../../src/Constants/uploads";
 import slotsRoutes from "../Modules/Slots/routes";
 import bookingRoutes from "../Modules/Booking/routes";
 import analyticsRoutes from "../Modules/Admin/Dashboard/routes.ts";
+import adminUserRoutes from "../Modules/Admin/userManagement/routes.ts";
 
 const router = Router();
 
@@ -24,5 +25,6 @@ router.use(uploadRoutes.path, uploadRoutes.router);
 router.use(slotsRoutes.path, slotsRoutes.router);
 router.use(bookingRoutes.path, bookingRoutes.router);
 router.use(analyticsRoutes.path, analyticsRoutes.router);
+router.use(adminUserRoutes.path, adminUserRoutes.router);
 
 export default router;

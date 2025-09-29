@@ -30,6 +30,9 @@ export interface IUser {
   resetPasswordExpires?: Date;
   academicQualification?: string;
   experience?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+
 }
 
 export interface IUserDocument extends IUser, Document {
