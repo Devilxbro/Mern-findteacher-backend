@@ -20,57 +20,58 @@ export class TeacherService {
     const limit = parseInt(filter.limit || "10", 10);
     const skip = (page - 1) * limit;
 
-    const query: any = { role: "teacher", isActive: true };
+    const match: any = { role: "teacher", isActive: true };
 
-    if (filter.isFeatured) query.isFeatured = true;
+    // Featured filter
+    if (filter.isFeatured) match.isFeatured = true;
 
-    if (filter.minRating) query.rating = { $gte: Number(filter.minRating) };
+    // Top-rated filter
+    if (filter.minRating) match.rating = { $gte: Number(filter.minRating) };
 
+    // Affordable filter
+    if (filter.maxHourlyRate) match.hourlyRate = { $lte: Number(filter.maxHourlyRate) };
 
-    if (filter.maxHourlyRate) query.hourlyRate = { $lte: Number(filter.maxHourlyRate) };
+    const pipeline: any[] = [];
 
-
-    if (filter.nearby && filter.latitude && filter.longitude) {
-      query.location = {
-        $near: {
-          $geometry: {
-            type: "Point",
-            coordinates: [Number(filter.longitude), Number(filter.latitude)],
-          },
-          $maxDistance: filter.maxDistance || 10000, // meters (10km default)
+    // --- Nearby filter ---
+    if (filter.latitude && filter.longitude) {
+      pipeline.push({
+        $geoNear: {
+          near: { type: "Point", coordinates: [Number(filter.longitude), Number(filter.latitude)] },
+          distanceField: "distance",
+          spherical: true,
+          maxDistance: Number(filter.maxDistance || 10000), // meters
+          query: match, // apply other filters here
         },
-      };
+      });
+    } else {
+      // No nearby: apply match stage
+      pipeline.push({ $match: match });
     }
 
-
+    // Sorting
     const sort: any = {};
-    if (filter.sortBy === "rating") sort.rating = -1;           // Top Rated
-    else if (filter.sortBy === "hourlyRate") sort.hourlyRate = 1; // Cheapest first
-    else sort.createdAt = -1;                                    // Default: newest first
+    if (filter.sortBy === "rating") sort.rating = -1;
+    else if (filter.sortBy === "hourlyRate") sort.hourlyRate = 1;
+    else if (!filter.latitude) sort.createdAt = -1; // only if not geoNear
+    // if geoNear is used, distance is already sorted by default
 
-    log("MongoDB query:", query);
-    log("Sort:", sort);
+    if (Object.keys(sort).length) pipeline.push({ $sort: sort });
 
-    const [teachers, total] = await Promise.all([
-      UserModel.find(query)
-        .select("-password")
-        .sort(sort)
-        .skip(skip)
-        .limit(limit)
-        .lean(),
-      UserModel.countDocuments(query),
-    ]);
+    // Pagination
+    pipeline.push({ $skip: skip });
+    pipeline.push({ $limit: limit });
 
+    log("Aggregation pipeline:", JSON.stringify(pipeline, null, 2));
+
+    const teachers = await UserModel.aggregate(pipeline);
+
+    // Count total (without skip/limit)
+    const total = await UserModel.countDocuments(match);
     const totalPages = Math.ceil(total / limit);
     const nextPage = page < totalPages ? page + 1 : null;
 
-    return {
-      teachers,
-      total,
-      page,
-      totalPages,
-      nextPage,
-    };
+    return { teachers, total, page, totalPages, nextPage };
   }
 
 

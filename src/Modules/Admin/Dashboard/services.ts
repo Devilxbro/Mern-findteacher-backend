@@ -1,4 +1,4 @@
-// src/services/analytics.service.ts
+
 import { UserModel } from "../../../Db/entities/User.ts";
 import { BookingModel } from "../../../Db/entities/Bookings.ts";
 

@@ -101,5 +101,6 @@ export const ROUTES = {
     AVAILABLE: '/available',
     CREATE: '/book',
     CANCEL: '/cancel',
+    HISTORY:'/history',
   },
 };

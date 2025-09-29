@@ -30,6 +30,7 @@ export class AuthService {
       userProfilePicture,
       description,
       experience,
+      location
     } = input;
 
     if (password !== confirmPassword) {
@@ -63,7 +64,7 @@ export class AuthService {
       experience,
       isActive: true,
       isVerified: false,
-      location
+      location:location
     });
 
     await newUser.save();

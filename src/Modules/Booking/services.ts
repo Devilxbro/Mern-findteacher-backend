@@ -64,4 +64,20 @@ export class BookingService {
 
     return { message: "Booking cancelled successfully", booking };
   }
+
+  async getAppointmentHistory(userId: string, role: "student" | "teacher", status?: string) {
+    const query: any = {};
+
+    if (role === "student") query.studentId = new Types.ObjectId(userId);
+    else if (role === "teacher") query.teacherId = new Types.ObjectId(userId);
+
+    if (status) query.status = status;
+
+    return BookingModel.find(query)
+      .populate("slotId")
+      .populate("studentId", "fullName email")
+      .populate("teacherId", "fullName email")
+      .sort({ createdAt: -1 })
+      .lean();
+  }
 }

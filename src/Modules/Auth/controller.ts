@@ -28,11 +28,10 @@ export class AuthController {
 
       } = req.body;
       let location: { type: "Point"; coordinates: [number, number] } | undefined;
-
       if (latitude && longitude) {
         location = {
           type: "Point",
-          coordinates: [Number(longitude), Number(latitude)] as [number, number],
+          coordinates: [Number(longitude), Number(latitude)],
         };
       }
 
