@@ -172,6 +172,10 @@ import rateLimit from 'express-rate-limit';
 import { ZodObject } from 'zod';
 import { UserModel } from '../Db/entities/User';
 import envConfig from '../Config/env.ts';
+import multer from "multer";
+import bodyParser from "body-parser";
+
+const upload = multer(); // No file storage needed for fields
 const config = envConfig();
 
 const JWT_SECRET = config.JWT_SECRET;
@@ -186,7 +190,19 @@ export interface AuthRequest extends Request {
   };
 }
 
-// Global Middleware
+/* -----------------------------------------------------
+   Universal Body Parser Middleware
+   - Handles JSON, URL-encoded, multipart/form-data
+----------------------------------------------------- */
+export const smartBodyParser = [
+  bodyParser.json(),                 // application/json
+  bodyParser.urlencoded({ extended: true }), // application/x-www-form-urlencoded
+  upload.none(),                     // multipart/form-data fields only
+];
+
+/* -----------------------------------------------------
+   Global Middlewares (security, logging, cleanup)
+----------------------------------------------------- */
 export const applyGlobalMiddleware = (app: Application) => {
   app.use(morgan('combined'));
   app.use(helmet());
@@ -194,6 +210,7 @@ export const applyGlobalMiddleware = (app: Application) => {
   app.use(xssClean());
   app.use(mongoSanitize());
 
+  // Rate limiting
   app.use(
     '/api',
     rateLimit({
@@ -202,6 +219,9 @@ export const applyGlobalMiddleware = (app: Application) => {
       message: 'Too many requests, take a breather.',
     })
   );
+
+  // Universal body parser
+  app.use(smartBodyParser);
 };
 
 // Auth Middleware

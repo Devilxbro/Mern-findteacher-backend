@@ -41,7 +41,7 @@ export interface IUser {
   location?: {
     type: 'Point';
     coordinates: [number, number]; // [longitude, latitude]
-  }
+  };
 }
 
 export interface IUserDocument extends IUser, Document {
@@ -103,13 +103,14 @@ const userSchema = new Schema<IUserDocument>(
         type: String,
         enum: ['Point'],
         default: 'Point',
+        required: false,
       },
       coordinates: {
         type: [Number], // [longitude, latitude]
         index: '2dsphere',
         required: false,
       },
-    }
+    },
   },
   { timestamps: true },
 );

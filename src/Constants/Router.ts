@@ -16,6 +16,9 @@ import analyticsRoutes from "../Modules/Admin/Dashboard/routes.ts";
 import adminUserRoutes from "../Modules/Admin/userManagement/routes.ts";
 import teacherRoutes from "../Modules/Teacher/routes.ts"
 import eventRoutes from "../Modules/Events/routes.ts";
+import sessionRoutes from "../Modules/Admin/BookingManagemnt/routes.ts";
+
+
 
 const router = Router();
 
@@ -30,5 +33,6 @@ router.use(analyticsRoutes.path, analyticsRoutes.router);
 router.use(adminUserRoutes.path, adminUserRoutes.router);
 router.use(teacherRoutes.path, teacherRoutes.router);
 router.use(eventRoutes.path, eventRoutes.router)
+router.use(sessionRoutes.path, sessionRoutes.router);
 
 export default router;

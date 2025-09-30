@@ -85,8 +85,13 @@ export const ROUTES = {
     LIST: '/list',
     DETAIL: '/detail',
   },
-
-
+  ADMIN_SESSIONS: {
+    ROOT: `${API_BASE}/admin/sessions`,
+    LIST: '/',
+    DETAIL: '/:id',
+    CANCEL: '/:id/cancel',
+    ANALYTICS: '/analytics',
+  },
 
   ANALYTICS: {
     ROOT: `${API_BASE}/admin/analytics`,

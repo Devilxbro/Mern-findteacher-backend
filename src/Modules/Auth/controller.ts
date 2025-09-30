@@ -5,7 +5,7 @@ import { AuthRequest } from '../../Middleware/Middleware.ts';
 export class AuthController {
   static async signup(req: Request, res: Response) {
     try {
-      const {
+      let {
         title,
         firstName,
         lastName,
@@ -23,10 +23,27 @@ export class AuthController {
         qualifications,
         experience,
         latitude,
-        longitude
-
-
+        longitude,
       } = req.body;
+
+      // Parse qualifications JSON if sent as string
+      if (typeof qualifications === "string") {
+        qualifications = JSON.parse(qualifications);
+      }
+
+      const files = req.files as Record<string, Express.Multer.File[]> | undefined;
+
+// Ensure qualifications array exists
+      qualifications = qualifications || [{}];
+
+// Map uploaded files to qualifications
+      if (files) {
+        qualifications[0].degree = (files["degree"] || []).map(f => `img/${f.filename}`);
+        qualifications[0].diplomas = (files["diplomas"] || []).map(f => `img/${f.filename}`);
+        qualifications[0].certificate = (files["certificate"] || []).map(f => `img/${f.filename}`);
+        qualifications[0].majorSubjects = (files["majorSubjects"] || []).map(f => `img/${f.filename}`);
+      }
+      // Location handling
       let location: { type: "Point"; coordinates: [number, number] } | undefined;
       if (latitude && longitude) {
         location = {
@@ -35,7 +52,7 @@ export class AuthController {
         };
       }
 
-
+      // Call AuthService to create user
       const result = await AuthService.signup({
         title,
         firstName,
@@ -51,21 +68,21 @@ export class AuthController {
         academicQualification,
         proofsQualification,
         highestQualificationPerSubject,
-        qualifications, // might be JSON string in multipart
+        qualifications,
         experience,
-        location
-
+        location,
       });
 
       res.status(201).json({
         success: true,
-        message: 'User created successfully',
+        message: "User created successfully",
         user: result,
       });
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
   }
+
 
   static async login(req: Request, res: Response) {
     try {

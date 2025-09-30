@@ -1,7 +1,9 @@
     import { Router } from 'express';
     import { AuthController } from '../Auth/controller.ts';
     import { ROUTES } from '../../Constants/constants.ts';
-    import { authMiddleware, roleMiddleware } from '../../Middleware/Middleware.ts';
+    import { qualificationFields } from "../../Constants/misc.ts";
+
+    import { authMiddleware, roleMiddleware, smartBodyParser } from '../../Middleware/Middleware.ts';
 
     const router = Router();
 
@@ -9,10 +11,10 @@
      * Auth Routes
      * Mounted under: /api/v1/auth
      */
-    router.post(ROUTES.AUTH.SIGNUP, AuthController.signup);
-    router.post(ROUTES.AUTH.LOGIN, AuthController.login);
-    router.post(ROUTES.AUTH.FORGOT_PASSWORD, AuthController.forgotPassword);
-    router.post(ROUTES.AUTH.RESET_PASSWORD, AuthController.resetPassword);
+    router.post(ROUTES.AUTH.SIGNUP, qualificationFields,AuthController.signup);
+    router.post(ROUTES.AUTH.LOGIN, smartBodyParser ,AuthController.login);
+    router.post(ROUTES.AUTH.FORGOT_PASSWORD, smartBodyParser,AuthController.forgotPassword);
+    router.post(ROUTES.AUTH.RESET_PASSWORD, smartBodyParser,AuthController.resetPassword);
     router.get(
       ROUTES.AUTH.LISTING_PARAMS,
       authMiddleware,
@@ -34,6 +36,7 @@
     router.put(
       ROUTES.AUTH.EDITOR,
       authMiddleware,
+      smartBodyParser,
       AuthController.editProfile,
     )
     router.delete(
