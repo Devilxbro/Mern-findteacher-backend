@@ -18,11 +18,12 @@ export interface SignupInput {
   proofsAddress: string;
   subjectsOffered: string;
   qualifications?: IQualification[]; // <-- updated
-  proofsQualification: string;
+  proofsQualification?: string[];
   academicQualification:string;
   highestQualificationPerSubject: string;
   userProfilePicture?: string;
   description?: string;
+  zipCode?: string;
   experience?: string;
   location?: {
     type: 'Point';

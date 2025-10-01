@@ -36,7 +36,7 @@
     router.put(
       ROUTES.AUTH.EDITOR,
       authMiddleware,
-      smartBodyParser,
+      qualificationFields,
       AuthController.editProfile,
     )
     router.delete(

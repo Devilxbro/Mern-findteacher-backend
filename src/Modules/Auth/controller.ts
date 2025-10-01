@@ -24,6 +24,7 @@ export class AuthController {
         experience,
         latitude,
         longitude,
+        zipCode
       } = req.body;
 
       // Parse qualifications JSON if sent as string
@@ -33,17 +34,31 @@ export class AuthController {
 
       const files = req.files as Record<string, Express.Multer.File[]> | undefined;
 
-// Ensure qualifications array exists
       qualifications = qualifications || [{}];
 
-// Map uploaded files to qualifications
       if (files) {
         qualifications[0].degree = (files["degree"] || []).map(f => `img/${f.filename}`);
         qualifications[0].diplomas = (files["diplomas"] || []).map(f => `img/${f.filename}`);
         qualifications[0].certificate = (files["certificate"] || []).map(f => `img/${f.filename}`);
         qualifications[0].majorSubjects = (files["majorSubjects"] || []).map(f => `img/${f.filename}`);
+
+        // Handle documentId
+        if (files["documentId"] && files["documentId"].length > 0) {
+          documentId = `img/${files["documentId"][0].filename}`;
+        }
+
+        // Handle proofsQualification - Convert array to JSON string
+        if (files["proofsQualification"] && files["proofsQualification"].length > 0) {
+          const proofsArray = files["proofsQualification"].map(f => `img/${f.filename}`);
+          proofsQualification = JSON.stringify(proofsArray);
+        }
       }
-      // Location handling
+
+      // If proofsQualification exists but is not a string, convert it
+      if (proofsQualification && typeof proofsQualification !== 'string') {
+        proofsQualification = JSON.stringify(proofsQualification);
+      }
+
       let location: { type: "Point"; coordinates: [number, number] } | undefined;
       if (latitude && longitude) {
         location = {
@@ -71,6 +86,7 @@ export class AuthController {
         qualifications,
         experience,
         location,
+        zipCode
       });
 
       res.status(201).json({
@@ -149,6 +165,16 @@ export class AuthController {
       }
 
       const user = await AuthService.getSpecificUser(userId);
+
+      // Parse proofsQualification back to array for response
+      if (user && user.proofsQualification && typeof user.proofsQualification === 'string') {
+        try {
+          (user as any).proofsQualification = JSON.parse(user.proofsQualification);
+        } catch (e) {
+          console.error('Error parsing proofsQualification:', e);
+        }
+      }
+
       res.status(200).json({ success: true, data: user });
     } catch (error: any) {
       res.status(404).json({ success: false, message: error.message });
@@ -180,10 +206,25 @@ export class AuthController {
         .json({ error: 'Unauthorized: missing user ID in token.' });
     }
 
-    const updates = { ...req.body };
+    let updates = { ...req.body };
+
+    // Handle proofsQualification if it's being updated
+    if (updates.proofsQualification && typeof updates.proofsQualification !== 'string') {
+      updates.proofsQualification = JSON.stringify(updates.proofsQualification);
+    }
 
     try {
       const updatedUser = await AuthService.updateUserProfile(userId, updates);
+
+      // Parse proofsQualification back to array for response
+      if (updatedUser && updatedUser.proofsQualification && typeof updatedUser.proofsQualification === 'string') {
+        try {
+          (updatedUser as any).proofsQualification = JSON.parse(updatedUser.proofsQualification);
+        } catch (e) {
+          console.error('Error parsing proofsQualification:', e);
+        }
+      }
+
       return res.status(200).json({ success: true, user: updatedUser });
     } catch (error: any) {
       console.error('[Edit Profile Error]', error);
@@ -210,7 +251,7 @@ export class AuthController {
       });
     } catch (error: unknown) {
       const message =
-          error instanceof Error ? error.message : "Delete failed.";
+        error instanceof Error ? error.message : "Delete failed.";
       return res.status(400).json({
         success: false,
         message,
