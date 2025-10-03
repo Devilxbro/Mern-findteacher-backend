@@ -89,7 +89,7 @@ export const ROUTES = {
     ROOT: "/api/v1/admin/sessions",
     LIST: "/",
     DETAIL: "/:id",
-    CANCEL: "/:id/cancel",
+    CANCEL: "/cancel/:id",        // <--- changed here
     ANALYTICS: "/analytics",
     HISTORY: "/history",
     UPCOMING: "/upcoming",
@@ -97,6 +97,7 @@ export const ROUTES = {
     SLOT_AVAILABILITY: "/slots/:slotId/availability",
     ORPHANED: "/maintenance/orphaned"
   },
+
 
   ANALYTICS: {
     ROOT: `${API_BASE}/admin/analytics`,

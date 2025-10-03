@@ -129,30 +129,27 @@ export class SessionController {
    * PATCH /api/v1/admin/sessions/:id/cancel
    */
   static async cancel(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { reason, cancelledBy } = req.body;
+      try {
+          const { reason, cancelledBy } = req.body;
+          const sessionId = req.params.id;
 
-      if (!req.params.id) {
-        throw new Error("Session ID is required");
+          if (!sessionId) {
+              throw new Error("Session ID is required");
+          }
+
+          const result = await sessionService.cancelSession(sessionId, reason, cancelledBy);
+
+          res.status(200).json({
+              success: true,
+              ...result
+          });
+      } catch (error: unknown) {
+          if (error instanceof Error) {
+              next(new ApiError(400, error.message));
+          } else {
+              next(new ApiError(400, "Unknown error occurred"));
+          }
       }
-
-      const result = await sessionService.cancelSession(
-          req.params.id,
-          reason,
-          cancelledBy
-      );
-
-      res.json({
-        success: true,
-        ...result
-      });
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        next(new ApiError(400, error.message));
-      } else {
-        next(new ApiError(400, "Unknown error occurred"));
-      }
-    }
   }
 
   /**

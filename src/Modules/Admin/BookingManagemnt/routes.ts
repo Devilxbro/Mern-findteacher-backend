@@ -25,6 +25,15 @@ router.get(
 );
 
 /**
+ * GET /api/v1/admin/sessions/analytics
+ * Get session analytics with optional date filtering
+ */
+router.get(
+    ROUTES.ADMIN_SESSIONS.ANALYTICS,
+    SessionController.analytics.bind(SessionController)
+);
+
+/**
  * GET /api/v1/admin/sessions/history
  * Get booking history (completed and cancelled sessions)
  */
@@ -77,14 +86,6 @@ router.patch(
 // ANALYTICS & UTILITIES
 // =====================================================
 
-/**
- * GET /api/v1/admin/sessions/analytics
- * Get session analytics with optional date filtering
- */
-router.get(
-    ROUTES.ADMIN_SESSIONS.ANALYTICS,
-    SessionController.analytics.bind(SessionController)
-);
 
 /**
  * GET /api/v1/admin/sessions/slots/:slotId/availability
