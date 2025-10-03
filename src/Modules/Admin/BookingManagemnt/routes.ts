@@ -1,23 +1,113 @@
 /**
  * routes/session.routes.ts
- * -----------------------------------------------------
- * Admin Session API routes (v1)
+ * =====================================================
+ * Complete Admin Session API Routes (v1)
  * Mounted under: /api/v1/admin/sessions
  */
 
 import { Router } from "express";
-import { SessionController } from "../BookingManagemnt/controlller.ts";
-import { ROUTES } from "../../../Constants/constants.ts";
+import { SessionController } from "../BookingManagemnt/controlller";
+import { ROUTES } from "../../../Constants/constants";
 
 const router = Router();
-const controller = SessionController; // static methods
+
+// =====================================================
+// SESSION LISTING & FILTERING ROUTES
+// =====================================================
 
 /**
- * Admin Session Routes
+ * GET /api/v1/admin/sessions
+ * List all sessions with advanced filtering
  */
-router.get(ROUTES.ADMIN_SESSIONS.LIST, controller.list.bind(controller)); // List sessions
-router.get(ROUTES.ADMIN_SESSIONS.DETAIL, controller.getById.bind(controller)); // Get session by ID
-router.put(ROUTES.ADMIN_SESSIONS.CANCEL, controller.cancel.bind(controller)); // Cancel session
-router.get(ROUTES.ADMIN_SESSIONS.ANALYTICS, controller.analytics.bind(controller)); // Session analytics
+router.get(
+    ROUTES.ADMIN_SESSIONS.LIST,
+    SessionController.list.bind(SessionController)
+);
 
-export default { path: ROUTES.ADMIN_SESSIONS.ROOT, router };
+/**
+ * GET /api/v1/admin/sessions/history
+ * Get booking history (completed and cancelled sessions)
+ */
+router.get(
+    ROUTES.ADMIN_SESSIONS.HISTORY,
+    SessionController.getHistory.bind(SessionController)
+);
+
+/**
+ * GET /api/v1/admin/sessions/upcoming
+ * Get upcoming sessions (booked, accepted, pending)
+ */
+router.get(
+    ROUTES.ADMIN_SESSIONS.UPCOMING,
+    SessionController.getUpcoming.bind(SessionController)
+);
+
+/**
+ * GET /api/v1/admin/sessions/status/:status
+ * Get sessions by specific status
+ */
+router.get(
+    ROUTES.ADMIN_SESSIONS.BY_STATUS,
+    SessionController.getByStatus.bind(SessionController)
+);
+
+// =====================================================
+// SESSION DETAILS & ACTIONS
+// =====================================================
+
+/**
+ * GET /api/v1/admin/sessions/:id
+ * Get session by ID with full details
+ */
+router.get(
+    ROUTES.ADMIN_SESSIONS.DETAIL,
+    SessionController.getById.bind(SessionController)
+);
+
+/**
+ * PATCH /api/v1/admin/sessions/:id/cancel
+ * Cancel a session
+ */
+router.patch(
+    ROUTES.ADMIN_SESSIONS.CANCEL,
+    SessionController.cancel.bind(SessionController)
+);
+
+// =====================================================
+// ANALYTICS & UTILITIES
+// =====================================================
+
+/**
+ * GET /api/v1/admin/sessions/analytics
+ * Get session analytics with optional date filtering
+ */
+router.get(
+    ROUTES.ADMIN_SESSIONS.ANALYTICS,
+    SessionController.analytics.bind(SessionController)
+);
+
+/**
+ * GET /api/v1/admin/sessions/slots/:slotId/availability
+ * Check if a specific slot is available
+ */
+router.get(
+    ROUTES.ADMIN_SESSIONS.SLOT_AVAILABILITY,
+    SessionController.checkSlotAvailability.bind(SessionController)
+);
+
+/**
+ * GET /api/v1/admin/sessions/maintenance/orphaned
+ * Find orphaned bookings (debugging/maintenance endpoint)
+ */
+router.get(
+    ROUTES.ADMIN_SESSIONS.ORPHANED,
+    SessionController.findOrphaned.bind(SessionController)
+);
+
+// =====================================================
+// EXPORT
+// =====================================================
+export default {
+    path: ROUTES.ADMIN_SESSIONS.ROOT,
+    router
+};

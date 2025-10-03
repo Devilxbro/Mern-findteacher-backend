@@ -86,11 +86,16 @@ export const ROUTES = {
     DETAIL: '/detail',
   },
   ADMIN_SESSIONS: {
-    ROOT: `${API_BASE}/admin/sessions`,
-    LIST: '/',
-    DETAIL: '/:id',
-    CANCEL: '/:id/cancel',
-    ANALYTICS: '/analytics',
+    ROOT: "/api/v1/admin/sessions",
+    LIST: "/",
+    DETAIL: "/:id",
+    CANCEL: "/:id/cancel",
+    ANALYTICS: "/analytics",
+    HISTORY: "/history",
+    UPCOMING: "/upcoming",
+    BY_STATUS: "/status/:status",
+    SLOT_AVAILABILITY: "/slots/:slotId/availability",
+    ORPHANED: "/maintenance/orphaned"
   },
 
   ANALYTICS: {
