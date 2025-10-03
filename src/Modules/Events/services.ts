@@ -56,8 +56,32 @@ export class EventService {
         if (!event) throw new Error("Event not found");
         return event;
     }
+  async getUpcomingEvents(filter: any = {}) {
+    const page = parseInt(filter.page || "1", 10);
+    const limit = parseInt(filter.limit || "10", 10);
+    const skip = (page - 1) * limit;
 
-    async deleteEvent(id: string) {
+    const now = new Date();
+
+    const query: any = {
+      startDate: { $gte: now }, // only future events
+    };
+
+    if (filter.isActive !== undefined) query.isActive = filter.isActive === "true";
+
+    const [events, total] = await Promise.all([
+      EventModel.find(query).sort({ startDate: 1 }).skip(skip).limit(limit).lean(),
+      EventModel.countDocuments(query),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+    const nextPage = page < totalPages ? page + 1 : null;
+
+    return { events, total, page, totalPages, nextPage };
+  }
+
+
+  async deleteEvent(id: string) {
         if (!Types.ObjectId.isValid(id)) throw new Error("Invalid ID");
         const deleted = await EventModel.findByIdAndDelete(id);
         if (!deleted) throw new Error("Event not found");

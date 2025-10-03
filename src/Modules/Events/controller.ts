@@ -33,8 +33,18 @@ export class EventController {
             res.status(400).json({ success: false, message: err.message });
         }
     }
+  async getUpcomingEvents(req: AuthRequest, res: Response) {
+    try {
+      const data = await service.getUpcomingEvents(req.query);
+      res.json({ success: true, data });
+    } catch (err: any) {
+      log(err);
+      res.status(500).json({ success: false, message: err.message });
+    }
+  }
 
-    async listEvents(req: AuthRequest, res: Response) {
+
+  async listEvents(req: AuthRequest, res: Response) {
         try {
             const data = await service.listEvents(req.query);
             res.json({ success: true, data });

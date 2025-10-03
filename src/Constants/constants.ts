@@ -84,6 +84,7 @@ export const ROUTES = {
     DELETE: '/delete',
     LIST: '/list',
     DETAIL: '/detail',
+    UPCOMING:'/upcoming',
   },
   ADMIN_SESSIONS: {
     ROOT: "/api/v1/admin/sessions",

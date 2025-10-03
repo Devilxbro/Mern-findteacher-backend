@@ -6,6 +6,7 @@ import { ROUTES } from "../../Constants/constants";
 const router = Router();
 const controller = EventController.getInstance();
 
+router.get(ROUTES.EVENTS.UPCOMING, authMiddleware, controller.getUpcomingEvents.bind(controller));
 router.get(ROUTES.EVENTS.LIST, authMiddleware, controller.listEvents.bind(controller));
 router.post(ROUTES.EVENTS.CREATE, authMiddleware, smartBodyParser ,controller.createEvent.bind(controller));
 router.get(`${ROUTES.EVENTS.DETAIL}/:id`, authMiddleware, controller.getEvent.bind(controller));
